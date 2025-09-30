@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ultra Fast Dynamic Carousel</title>
+  <style>
+    * { 
+  margin: 0; 
+  box-sizing: border-box; 
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  transition: background-image 0.4s ease;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.main {
+  display: flex;
+  gap: 30px;
+  align-items: stretch;
+  max-width: 1200px;
+  width: 100%;
+  height: 80vh;
+}
+
+.text-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  /* background: rgba(255, 255, 255, .15);
+  border-radius: 20px;
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, .2); */
+}
+
+.carousel-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.carousel-container {
+  background: rgba(255, 255, 255, .95);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, .3);
+  border: 2px solid rgba(255, 255, 255, .4);
+  position: relative;
+}
+
+.i {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .2);
+  border: 1px solid rgba(0, 0, 0, .1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.i:hover {
+  transform: scale(1.02);
+}
+
+.t {
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.t h2 {
+  color: #1a1a1a;
+  font-size: 32px;
+  margin-bottom: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.t .subtitle {
+  color: #667eea;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+.t p {
+  color: #2c3e50;
+  font-size: 18px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+  font-weight: 400;
+  text-align: justify;
+}
+
+.t .specs {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, .8);
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.tag {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.b {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: 0;
+  color: #fff;
+  font-size: 14px;
+  padding: 12px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+  min-width: 100px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auto-toggle {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.auto-toggle.active {
+  background: #667eea;
+  color: #fff;
+  border-color: #667eea;
+}
+
+.fade {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dot.active {
+  background: #667eea;
+  transform: scale(1.3);
+}
+
+.dot:hover {
+  background: #764ba2;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, .1);
+  border-radius: 2px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.slide-counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, .7);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.thumbnail-nav {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 5px 0;
+}
+
+.thumbnail {
+  width: 50px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.6;
+  border: 1px solid transparent;
+}
+
+.thumbnail.active {
+  opacity: 1;
+  border-color: #667eea;
+  transform: scale(1.05);
+}
+
+.thumbnail:hover {
+  opacity: 1;
+}
+
+@media (max-width: 1000px) {
+  .main {
+    flex-direction: column;
+    gap: 20px;
+    height: auto;
+  }
+
+  .text-section,
+  .carousel-section {
+    flex: none;
+  }
+
+  .i {
+    height: 250px;
+  }
+
+  .t h2 {
+    font-size: 28px;
+  }
+
+  .t p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 15px;
+  }
+
+  .text-section,
+  .carousel-container {
+    padding: 20px;
+  }
+
+  .t h2 {
+    font-size: 24px;
+  }
+
+  .t p {
+    font-size: 15px;
+  }
+
+  .i {
+    height: 200px;
+  }
+
+  .b {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  button {
+    min-width: 80px;
+    padding: 10px 16px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="text-section">
+      <div class="t" id="t">
+        <div class="subtitle" id="sub"></div>
+        <h2 id="h"></h2>
+        <p id="d"></p>
+        <p class="specs" id="s"></p>
+        <div class="tags" id="tags"></div>
+      </div>
+    </div>
+
+    <div class="carousel-section">
+      <div class="carousel-container">
+        <div class="slide-counter" id="counter">1 / 4</div>
+        <img class="i" id="i" alt="Carousel image">
+        <div class="thumbnail-nav" id="thumbnails"></div>
+        <div class="controls">
+          <div class="b">
+            <button onclick="p()" id="prevBtn">‹ Previous</button>
+            <button onclick="n()" id="nextBtn">Next ›</button>
+          </div>
+          <button class="auto-toggle" id="autoToggle" onclick="toggleAuto()">Auto: ON</button>
+        </div>
+        <div class="indicator" id="ind"></div>
+        <div class="progress-bar">
+          <div class="progress" id="progress"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>const imgs = [
+  'https://picsum.photos/id/1015/500/320',
+  'https://picsum.photos/id/1016/500/320',
+  'https://picsum.photos/id/1018/500/320',
+  'https://picsum.photos/id/1020/500/320'
+];
+
+const bgs = [
+  'https://picsum.photos/id/1015/1920/1080',
+  'https://picsum.photos/id/1016/1920/1080',
+  'https://picsum.photos/id/1018/1920/1080',
+  'https://picsum.photos/id/1020/1920/1080'
+];
+
+const thumbs = [
+  'https://picsum.photos/id/1015/50/32',
+  'https://picsum.photos/id/1016/50/32',
+  'https://picsum.photos/id/1018/50/32',
+  'https://picsum.photos/id/1020/50/32'
+];
+
+const content = [
+  {
+    subtitle: 'Explore Nature',
+    title: 'Mountain Adventure',
+    desc: 'Experience breathtaking mountain landscapes...',
+    specs: '📍 Alpine Region • ⏰ Best Time: Summer • 🕐 Duration: 3-5 days • 🎒 Difficulty: Moderate',
+    tags: ['Adventure', 'Nature', 'Hiking', 'Photography', 'Mountains', 'Alpine']
+  },
+  {
+    subtitle: 'Coastal Beauty',
+    title: 'Ocean Paradise',
+    desc: 'Discover stunning coastal views...',
+    specs: '📍 Pacific Coast • ⏰ Best Time: Year-round • 🕐 Duration: 2-4 days • 🎒 Difficulty: Easy',
+    tags: ['Beach', 'Relaxation', 'Sunset', 'Ocean', 'Coastal', 'Waves']
+  },
+  {
+    subtitle: 'Natural Sanctuary',
+    title: 'Forest Serenity',
+    desc: 'Immerse yourself in peaceful forest environments...',
+    specs: '📍 National Forest • ⏰ Best Time: Spring/Fall • 🕐 Duration: 1-3 days • 🎒 Difficulty: Easy',
+    tags: ['Forest', 'Peace', 'Wildlife', 'Camping', 'Trees', 'Nature']
+  },
+  {
+    subtitle: 'Wild Landscapes',
+    title: 'Desert Majesty',
+    desc: 'Explore vast desert landscapes...',
+    specs: '📍 Desert Southwest • ⏰ Best Time: Winter • 🕐 Duration: 2-3 days • 🎒 Difficulty: Moderate',
+    tags: ['Desert', 'Landscape', 'Sunrise', 'Adventure', 'Rocks', 'Stargazing']
+  }
+];
+
+let x = 0, autoSlideInterval, isAutoPlay = true;
+const img = document.getElementById('i'),
+  b = document.body,
+  textDiv = document.getElementById('t'),
+  subEl = document.getElementById('sub'),
+  titleEl = document.getElementById('h'),
+  descEl = document.getElementById('d'),
+  specsEl = document.getElementById('s'),
+  tagsEl = document.getElementById('tags'),
+  indEl = document.getElementById('ind'),
+  progressEl = document.getElementById('progress'),
+  counterEl = document.getElementById('counter'),
+  thumbsEl = document.getElementById('thumbnails'),
+  autoToggleEl = document.getElementById('autoToggle');
+
+function createIndicators() {
+  indEl.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    indEl.appendChild(dot);
+  }
+}
+
+function createThumbnails() {
+  thumbsEl.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const thumb = document.createElement('img');
+    thumb.className = 'thumbnail' + (i === 0 ? ' active' : '');
+    thumb.src = thumbs[i];
+    thumb.onclick = () => goTo(i);
+    thumbsEl.appendChild(thumb);
+  }
+}
+
+function updateIndicators() {
+  document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === x));
+  document.querySelectorAll('.thumbnail').forEach((thumb, i) => thumb.classList.toggle('active', i === x));
+}
+
+function updateProgress() {
+  progressEl.style.width = ((x + 1) / 4 * 100) + '%';
+}
+
+function updateCounter() {
+  counterEl.textContent = `${x + 1} / 4`;
+}
+
+function u() {
+  textDiv.classList.add('fade');
+  setTimeout(() => {
+    img.src = imgs[x];
+    b.style.backgroundImage = `url(${bgs[x]})`;
+    subEl.textContent = content[x].subtitle;
+    titleEl.textContent = content[x].title;
+    descEl.textContent = content[x].desc;
+    specsEl.textContent = content[x].specs;
+    tagsEl.innerHTML = content[x].tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+    updateIndicators();
+    updateProgress();
+    updateCounter();
+    setTimeout(() => textDiv.classList.remove('fade'), 50);
+  }, 150);
+}
+
+function n() {
+  x = (x + 1) % 4;
+  u();
+  resetAutoSlide();
+}
+
+function p() {
+  x = (x + 3) % 4;
+  u();
+  resetAutoSlide();
+}
+
+function goTo(i) {
+  x = i;
+  u();
+  resetAutoSlide();
+}
+
+function startAutoSlide() {
+  if (isAutoPlay) autoSlideInterval = setInterval(n, 4000);
+}
+
+function resetAutoSlide() {
+  clearInterval(autoSlideInterval);
+  startAutoSlide();
+}
+
+function toggleAuto() {
+  isAutoPlay = !isAutoPlay;
+  autoToggleEl.textContent = isAutoPlay ? 'Auto: ON' : 'Auto: OFF';
+  autoToggleEl.classList.toggle('active', isAutoPlay);
+  isAutoPlay ? startAutoSlide() : clearInterval(autoSlideInterval);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') n();
+  if (e.key === 'ArrowLeft') p();
+  if (e.key === ' ') { e.preventDefault(); toggleAuto(); }
+});
+
+let startX = 0;
+document.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => {
+  const endX = e.changedTouches[0].clientX;
+  const diff = startX - endX;
+  if (Math.abs(diff) > 50) diff > 0 ? n() : p();
+}, { passive: true });
+
+document.addEventListener('visibilitychange', () => {
+  document.hidden ? clearInterval(autoSlideInterval) : startAutoSlide();
+});
+
+img.addEventListener('click', event => {
+  const rect = img.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  clickX > rect.width / 2 ? n() : p();
+});
+
+[...imgs, ...bgs, ...thumbs].forEach(src => { const i = new Image(); i.src = src; });
+
+createIndicators();
+createThumbnails();
+u();
+startAutoSlide();
+</script>
+</body>
+</html>
